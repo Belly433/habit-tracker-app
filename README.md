@@ -5,11 +5,11 @@
 
 Habit tracker is a flutter mobile app with the main objective of helping users build a productive daily habits and build consistency through progress of tracking, streak monitoring, statistics and motivational feedback.
 
-This app allows users to manage daily activities, track completed habits, view history records and analyze their productivity using a clean interface.
+This application allows users to manage daily activities, track completed habits, view history records and analyze their productivity using a clean interface.
 
 ## Features Implemented
 
-- Daily progression bar
+- Habit completion tracking
 - Current and longest streak tracking
 - Calendar/date selection feature
 - Mark habits as completed
@@ -22,7 +22,10 @@ This app allows users to manage daily activities, track completed habits, view h
 - Responsive Flutter UI
 - Motivation message displayed after completing all daily tasks
 - History tracking for completed activities
-- Statistics screen with habit analytics
+- Statistics screen with productivity analytics
+- Animation UI components
+- Most completed habit analysis
+- Individual habit progress indicators
 
  ## Technology used
 
