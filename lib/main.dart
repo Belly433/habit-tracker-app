@@ -334,10 +334,8 @@ setState(() {});
         dailyHistory: dailyHistory,
       ),
       StatisticsScreen(
-  habits: habits,
-  dailyHistory: dailyHistory,
-  currentStreak: currentStreak,
-  longestStreak: longestStreak,
+        habits: habits,
+        dailyHistory: dailyHistory,
 ),
     ];
 
@@ -470,43 +468,109 @@ class _TodayScreenState extends State<TodayScreen> {
     ),
   ),
 ),
+
+
+
+            const SizedBox(height: 20),
+
+            Row(
+  children: [
+
+    Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+
+        decoration: BoxDecoration(
+          color: Colors.orange.withValues(alpha: 0.15),
+
+          borderRadius:
+              BorderRadius.circular(18),
+
+          border: Border.all(
+            color: Colors.orange,
+            width: 1.5,
+          ),
+        ),
+
+        child: Column(
+          children: [
+
+            const Icon(
+              Icons.local_fire_department,
+              color: Colors.orange,
+              size: 34,
+            ),
+
+            const SizedBox(height: 8),
+
             Text(
-              "${(widget.progress * 100).toInt()}% Completed Today",
+              "${widget.currentStreak}",
+
               style: const TextStyle(
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
 
-            const SizedBox(height: 20),
-
-            LinearProgressIndicator(
-              value: widget.progress,
-              minHeight: 15,
-              color: Colors.teal,
-              backgroundColor: Colors.grey,
+            const Text(
+              "Current Streak",
             ),
-            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    ),
 
-Text(
-  "Current Streak: ${widget.currentStreak} days",
-  style: const TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeight.bold,
-  ),
+    const SizedBox(width: 12),
+
+    Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+
+        decoration: BoxDecoration(
+          color: Colors.purple.withValues(alpha: 0.15),
+
+          borderRadius:
+              BorderRadius.circular(18),
+
+          border: Border.all(
+            color: Colors.purple,
+            width: 1.5,
+          ),
+        ),
+
+        child: Column(
+          children: [
+
+            const Icon(
+              Icons.emoji_events,
+              color: Colors.purple,
+              size: 34,
+            ),
+
+            const SizedBox(height: 8),
+
+            Text(
+              "${widget.longestStreak}",
+
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const Text(
+              "Longest Streak",
+            ),
+          ],
+        ),
+      ),
+    ),
+  ],
 ),
 
-const SizedBox(height: 8),
+            
 
-Text(
-  "Longest Streak: ${widget.longestStreak} days",
-  style: const TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeight.bold,
-  ),
-),
 
-const SizedBox(height: 20),
 
             const SizedBox(height: 20),
 
@@ -699,11 +763,65 @@ if (completedHabits ==
                     .bodyLarge!
                     .color,
       ),
+      
 
       child: Text(
         widget.habits[index]["name"],
       ),
     ),
+    subtitle: Column(
+  crossAxisAlignment:
+      CrossAxisAlignment.start,
+
+  children: [
+
+    const SizedBox(height: 6),
+
+    ClipRRect(
+      borderRadius:
+          BorderRadius.circular(12),
+
+      child: LinearProgressIndicator(
+        value:
+            (widget.dailyHistory.values
+                        .where(
+                          (day) => day.contains(
+                            widget.habits[index]["name"],
+                          ),
+                        )
+                        .length /
+                    10)
+                .clamp(0.0, 1.0),
+
+        minHeight: 8,
+
+        color: categoryColor,
+
+        backgroundColor:
+            Colors.grey.shade300,
+      ),
+    ),
+
+    const SizedBox(height: 6),
+
+    Text(
+      "Completed ${widget.dailyHistory.values.where((day) => day.contains(widget.habits[index]["name"])).length} times",
+
+      style: TextStyle(
+        color:
+            widget.habits[index]["done"]
+                ? categoryColor
+                : Theme.of(context)
+                    .textTheme
+                    .bodySmall!
+                    .color,
+
+        fontSize: 13,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+  ],
+),
   ),
 );
                         
@@ -725,6 +843,7 @@ if (completedHabits ==
                               .map(
                                 (task) =>
                                     ListTile(
+                                      
                                   leading:
                                       const Icon(
                                     Icons
@@ -945,17 +1064,13 @@ class HistoryScreen extends StatefulWidget {
 class StatisticsScreen extends StatelessWidget {
   final List<Map<String, dynamic>> habits;
   final Map<String, List<String>> dailyHistory;
-  final int currentStreak;
-  final int longestStreak;
+  
 
   const StatisticsScreen({
     super.key,
     required this.habits,
     required this.dailyHistory,
-    required this.currentStreak,
-    required this.longestStreak,
-  });
-
+});
   int getTotalCompleted() {
     int total = 0;
 
@@ -973,6 +1088,7 @@ class StatisticsScreen extends StatelessWidget {
   }
 
   double getCompletionRate() {
+
     if (habits.isEmpty) return 0;
 
     int completed = habits
@@ -981,6 +1097,58 @@ class StatisticsScreen extends StatelessWidget {
 
     return (completed / habits.length) * 100;
   }
+  String getMostCompletedHabit() {
+
+  if (dailyHistory.isEmpty) {
+    return "No Data";
+  }
+
+  Map<String, int> counts = {};
+
+  for (var day in dailyHistory.values) {
+
+    for (var habit in day) {
+
+      counts[habit] =
+          (counts[habit] ?? 0) + 1;
+    }
+  }
+  int maxCount =
+      counts.values.reduce(
+        (a, b) => a > b ? a : b,
+      );
+
+  List<String> topHabits =
+      counts.entries
+          .where(
+            (entry) =>
+                entry.value == maxCount,
+          )
+          .map((entry) => entry.key)
+          .toList();
+
+  if (topHabits.length > 1) {
+    return "Balanced Habits";
+  }
+
+  return topHabits.first;
+}
+
+
+String getProductivityLevel() {
+
+  double rate = getCompletionRate();
+
+  if (rate >= 80) {
+    return "Excellent";
+  } else if (rate >= 60) {
+    return "Good";
+  } else if (rate >= 40) {
+    return "Average";
+  } else {
+    return "Needs Improvement";
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -994,6 +1162,7 @@ class StatisticsScreen extends StatelessWidget {
 
         child: ListView(
           children: [
+
 
             buildStatCard(
               "Total Habits Completed",
@@ -1013,21 +1182,7 @@ class StatisticsScreen extends StatelessWidget {
 
             const SizedBox(height: 15),
 
-            buildStatCard(
-              "Current Streak",
-              "$currentStreak days",
-              Icons.local_fire_department,
-              Colors.orange,
-            ),
-
             const SizedBox(height: 15),
-
-            buildStatCard(
-              "Longest Streak",
-              "$longestStreak days",
-              Icons.emoji_events,
-              Colors.purple,
-            ),
 
             const SizedBox(height: 15),
 
@@ -1037,6 +1192,32 @@ class StatisticsScreen extends StatelessWidget {
               Icons.calendar_month,
               Colors.blue,
             ),
+            const SizedBox(height: 15),
+
+buildStatCard(
+  "Total Habits",
+  "${habits.length}",
+  Icons.list_alt,
+  Colors.teal,
+),
+
+const SizedBox(height: 15),
+
+buildStatCard(
+  "Most Completed Habit",
+  getMostCompletedHabit(),
+  Icons.star,
+  Colors.amber,
+),
+
+const SizedBox(height: 15),
+
+buildStatCard(
+  "Productivity Level",
+  getProductivityLevel(),
+  Icons.workspace_premium,
+  Colors.green,
+),
           ],
         ),
       ),
