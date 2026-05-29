@@ -20,7 +20,7 @@ This application allows users to manage daily activities, track completed habits
 - API & Networking integration using motivational quotes API
 - Color-coded habit cards
 - Responsive Flutter UI
-- Motivation message displayed after completing all daily tasks
+- Motivation message displayed after completing all habits
 - History tracking for completed activities
 - Statistics screen with productivity analytics
 - Animation UI components
