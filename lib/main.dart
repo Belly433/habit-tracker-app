@@ -610,10 +610,10 @@ class _TodayScreenState extends State<TodayScreen> {
                       });
                     },
                     child: Container(
-                      width: 60,
+                      width: 50,
                       margin:
                           const EdgeInsets.symmetric(
-                              horizontal: 4),
+                              horizontal: 2),
                       decoration: BoxDecoration(
                         color: selected
                             ? Colors.teal
